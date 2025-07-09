@@ -1,25 +1,33 @@
 #!/usr/bin/env python3
 import csv
 import os
-import re
+
+HIDER_COLORS = {
+    "S": "TURQUOISE",
+    "G": "PINK"
+}
 
 def read_clues_from_csv(filename):
     """Read clues from a CSV file, extracting the second field from each line."""
     try:
         clues = []
         codes = []
+        hider_code = None
+        last_hider_code = None
         with open(filename, 'r', encoding='utf-8') as file:
             csv_reader = csv.reader(file)
             for row in csv_reader:
                 print(row)
                 if len(row) < 2:
                     continue
-                # Strip quotes and whitespace from the second field
                 clue = row[1].strip().strip('"').strip("'")
+                hider_code = clue[0]
                 clues.append(clue)
                 codes.append(row[0].strip().strip('"').strip("'"))
+            if last_hider_code and hider_code != last_hider_code:
+                yield codes, clues
         print(f"Loaded {len(codes)} codes and {len(clues)} clues from {filename}")
-        return codes, clues
+        yield codes, clues
     except FileNotFoundError:
         print(f"Error: File '{filename}' not found.")
         return []
@@ -53,17 +61,20 @@ def generate_clues_array(clues):
 
     return "[" + ",\n".join(escaped_clues) + "]"
 
-def replace_clues_in_template(template_content, clues):
+def replace_clues_in_template(template_content, clues, clue, hider_color):
     """Replace the clues array in the template with the new clues and generate static HTML for the button and clues."""
-    # Find the line with the clues array
     lines = template_content.split('\n')
     
     for i, line in enumerate(lines):
-        if "var clues = ['REPLACE_CLUES_HERE'];" in line:
-            # Replace the clues array
+        if "REPLACE_CLUES_HERE" in line:
             new_clues_array = generate_clues_array(clues)
-            lines[i] = f"    var clues = {new_clues_array};"
-            break
+            lines[i] = line.replace(
+                "REPLACE_CLUES_HERE", new_clues_array
+            )
+        elif "REPLACE_CLUE_HERE" in line:
+            lines[i] = line.replace("REPLACE_CLUE_HERE", clue)
+        elif "REPLACE_COLOR_HERE" in line:
+            lines[i] = line.replace("REPLACE_COLOR_HERE", hider_color)
     
     return '\n'.join(lines)
 
@@ -76,43 +87,38 @@ def write_html_file(filename, content):
     except Exception as e:
         print(f"Error writing file: {e}")
 
-def main():
-    os.makedirs('generated_html/buttons', exist_ok=True)
-    
+def main():    
     template_buttons_content = read_template_file('template.buttons.html')
+    template_single_content = read_template_file('template.single.html')
+    template_cookie_content = read_template_file('template.cookie.html')
     
-    clues_dir = 'clues'
-    if not os.path.exists(clues_dir):
-        print(f"Error: Directory '{clues_dir}' not found.")
-        return
-    
-    for filename in os.listdir(clues_dir):
-        if not filename.endswith('.txt'):
-            continue
+    filename = "clues.csv"
+    print(f"\nProcessing {filename}...")
 
-        input_file = os.path.join(clues_dir, filename)
-        print(f"\nProcessing {input_file}...")
-        
-        codes, clues = read_clues_from_csv(input_file)            
+    for codes, clues in read_clues_from_csv(filename):
         print(f"Loaded {len(clues)} clues from {filename}")
-
-        modified_template = replace_clues_in_template(template_buttons_content, clues)
-
+        
+        for code, clue in zip(codes, clues):
+            modified_template = replace_clues_in_template(
+                template_single_content, clues, clue, HIDER_COLORS[code[0]])
+            os.makedirs(f"generated_html/single/{code}", exist_ok=True)
+            output_html = f"generated_html/single/{code}/index.html"
+            write_html_file(output_html, modified_template)
+        
+        modified_template = replace_clues_in_template(template_buttons_content, clues, None, None)
         basename = os.path.splitext(filename)[0]
         write_html_file( f"generated_html/buttons/{basename}.html", modified_template)
         for code, clue in zip(codes, clues):
             os.makedirs(f"generated_html/buttons/{code}", exist_ok=True)
             output_html = f"generated_html/buttons/{code}/index.html"
             write_html_file(output_html, modified_template)
-        
-        template_single_content = read_template_file('template.single.html')
+
         for code, clue in zip(codes, clues):
-            modified_template = replace_clues_in_template(template_single_content, clue)
-            os.makedirs(f"generated_html/single/{code}", exist_ok=True)
-            output_html = f"generated_html/single/{code}/index.html"
-            write_html_file(output_html, modified_template)
-            
-    print(f"\nCompleted processing all files in {clues_dir}/")
+            modified_cookie_template = replace_clues_in_template(
+                template_cookie_content, clues, clue, HIDER_COLORS[code[0]])
+            os.makedirs(f"generated_html/cookie/{code}", exist_ok=True)
+            output_html = f"generated_html/cookie/{code}/index.html"
+            write_html_file(output_html, modified_cookie_template)
 
 if __name__ == "__main__":
     main()
