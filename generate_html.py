@@ -26,6 +26,8 @@ def read_clues_from_csv(filename):
                 codes.append(row[0].strip().strip('"').strip("'"))
             if last_hider_code and hider_code != last_hider_code:
                 yield codes, clues
+                codes = []
+                clues = []
         print(f"Loaded {len(codes)} codes and {len(clues)} clues from {filename}")
         yield codes, clues
     except FileNotFoundError:
@@ -97,7 +99,7 @@ def main():
 
     for codes, clues in read_clues_from_csv(filename):
         print(f"Loaded {len(clues)} clues from {filename}")
-        
+
         for code, clue in zip(codes, clues):
             modified_template = replace_clues_in_template(
                 template_single_content, clues, clue, HIDER_COLORS[code[0]])
