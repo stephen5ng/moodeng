@@ -11,9 +11,14 @@ def read_clues_from_csv(filename):
         with open(filename, 'r', encoding='utf-8') as file:
             csv_reader = csv.reader(file)
             for row in csv_reader:
+                print(row)
+                if len(row) < 2:
+                    continue
                 # Strip quotes and whitespace from the second field
                 clue = row[1].strip().strip('"').strip("'")
                 clues.append(clue)
+                codes.append(row[0].strip().strip('"').strip("'"))
+        print(f"Loaded {len(codes)} codes and {len(clues)} clues from {filename}")
         return codes, clues
     except FileNotFoundError:
         print(f"Error: File '{filename}' not found.")
@@ -62,8 +67,6 @@ def replace_clues_in_template(template_content, clues):
     
     return '\n'.join(lines)
 
-
-
 def write_html_file(filename, content):
     """Write the generated HTML content to a file."""
     try:
@@ -74,11 +77,9 @@ def write_html_file(filename, content):
         print(f"Error writing file: {e}")
 
 def main():
-    os.makedirs('generated_html', exist_ok=True)
+    os.makedirs('generated_html/buttons', exist_ok=True)
     
-    template_content = read_template_file('template.buttons.html')
-    if template_content is None:
-        return
+    template_buttons_content = read_template_file('template.buttons.html')
     
     clues_dir = 'clues'
     if not os.path.exists(clues_dir):
@@ -86,20 +87,31 @@ def main():
         return
     
     for filename in os.listdir(clues_dir):
-        if filename.endswith('.txt'):
-            input_file = os.path.join(clues_dir, filename)
-            print(f"\nProcessing {input_file}...")
-            
-            codes, clues = read_clues_from_csv(input_file)            
-            print(f"Loaded {len(clues)} clues from {filename}")
+        if not filename.endswith('.txt'):
+            continue
 
-            modified_template = replace_clues_in_template(template_content, clues)
+        input_file = os.path.join(clues_dir, filename)
+        print(f"\nProcessing {input_file}...")
+        
+        codes, clues = read_clues_from_csv(input_file)            
+        print(f"Loaded {len(clues)} clues from {filename}")
 
-            basename = os.path.splitext(filename)[0]
-            output_html = f"generated_html/{basename}.html"
+        modified_template = replace_clues_in_template(template_buttons_content, clues)
 
+        basename = os.path.splitext(filename)[0]
+        write_html_file( f"generated_html/buttons/{basename}.html", modified_template)
+        for code, clue in zip(codes, clues):
+            os.makedirs(f"generated_html/buttons/{code}", exist_ok=True)
+            output_html = f"generated_html/buttons/{code}/index.html"
             write_html_file(output_html, modified_template)
-                
+        
+        template_single_content = read_template_file('template.single.html')
+        for code, clue in zip(codes, clues):
+            modified_template = replace_clues_in_template(template_single_content, clue)
+            os.makedirs(f"generated_html/single/{code}", exist_ok=True)
+            output_html = f"generated_html/single/{code}/index.html"
+            write_html_file(output_html, modified_template)
+            
     print(f"\nCompleted processing all files in {clues_dir}/")
 
 if __name__ == "__main__":

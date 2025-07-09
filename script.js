@@ -12,6 +12,18 @@ window.onload = function() {
         cluesDiv.innerHTML = cluesText;
     }
 
+    // Extract the last part of the path (the code) and update iframe src
+    var pathParts = window.location.pathname.split('/');
+    var code = pathParts[pathParts.length - 2]; // Get the second-to-last part (before 'index.html')
+    
+    // Find the iframe and update its src with the code
+    var iframe = document.querySelector('iframe');
+    if (iframe) {
+        var currentSrc = iframe.src;
+        var updatedSrc = currentSrc.replace('REPLACE_CODE_HERE', code);
+        iframe.src = updatedSrc;
+    }
+
     window.showClues = function(numClues) {
         for (var i = 0; i < clues.length; i++) {
             var clueElement = document.getElementById('clue-' + i);
