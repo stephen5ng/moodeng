@@ -107,10 +107,11 @@ def main():
             output_html = f"generated_html/single/{code}/index.html"
             write_html_file(output_html, modified_template)
         
-        modified_template = replace_clues_in_template(template_buttons_content, clues, None, None)
         basename = os.path.splitext(filename)[0]
-        write_html_file( f"generated_html/buttons/{basename}.html", modified_template)
+        write_html_file(f"generated_html/buttons/{basename}.html", modified_template)
         for code, clue in zip(codes, clues):
+            modified_template = replace_clues_in_template(
+                template_buttons_content, clues, clue, HIDER_COLORS[code[0]])
             os.makedirs(f"generated_html/buttons/{code}", exist_ok=True)
             output_html = f"generated_html/buttons/{code}/index.html"
             write_html_file(output_html, modified_template)
