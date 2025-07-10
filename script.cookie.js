@@ -8,8 +8,9 @@ window.onload = function() {
         alert('Error: clues variable not found');
     }
 
-    var code = sessionStorage.getItem('moodeng_code');
-    if (!code || !window.clues || !window.clues[code[0]]) {
+    var urlParams = new URLSearchParams(window.location.search);
+    var code = urlParams.get('moo');
+    if (!code || !window.clues || !window.codes[code] || !window.clues[code[0]]) {
         window.location.replace('/');
         return;
     }

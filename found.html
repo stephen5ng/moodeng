@@ -1,26 +1,95 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-<title>Clue</title>
+<html>
 <script src="/clues.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 <script type="text/javascript" src="/script.cookie.js"></script>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Get a Clue!</title>
+<style type="text/css">
+#apDiv1 {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 800px;
+	height: 183;
+	z-index: 1;
+	border-right-color: #5B4F4F;
+	border-left-color: #5B4F4F;
+	border-right-width: 2px;
+	border-left-width: 2px;
+	border-right-style: solid;
+	border-left-style: solid;
+}
+#apDiv2 {
+	position: absolute;
+	left: 0px;
+	top: 183px;
+	width: 780px;
+	z-index: 2;
+	background-color: #FFFFFF;
+	padding: 10px;
+border-right-color: #5B4F4F;
+	border-left-color: #5B4F4F;
+	border-right-width: 2px;
+	border-left-width: 2px;
+	border-right-style: solid;
+	border-left-style: solid;
+	text-align:left;
+}
+#apDiv3 {
+	position: absolute;
+	left: 0px;
+	top: 603px;
+	width: 640px;
+	z-index: 3;
+	background-color: #CBF8FE;
+	padding-right: 80px;
+	padding-bottom: 0px;
+	padding-top: 0px;
+	padding-left: 80px;
+	color: #CCC;
+	border-right-color: #5B4F4F;
+	border-left-color: #5B4F4F;
+	border-right-width: 2px;
+	border-left-width: 2px;
+	border-right-style: solid;
+	border-left-style: solid;
+}
+body {
+	background-color: #FFEFEA;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+.wrapper{
+	position: relative;
+	width: 800px;
+}
+</style>
 </head>
-	<body>
-		<center>
-			<div><img src="/moo.fw.png" width="800" height="183"></div>
-			<div>
-				Congratulations, you've found a <i><span id="moodengColor"></span></i> Moodeng!
-				<br/>
-				You've found the following Moodengs:<br/>
-				<div id="foundMoodengs"></div>
-				Based on your collected Moodengs, here are your hider clues:
-			</div>
-			<div><strong>Clues:</strong><br></div>
-			<div id="cluesList"></div>
-			<div>
-				<iframe data-base-url="https://docs.google.com/forms/d/e/1FAIpQLSdewTFXOz-g7_VebL_WGb8Apb00dEiBo2y9-WMwjpYxVYNY5Q/viewform?embedded=true&entry.76124934=" width="640" height="1500" style="border: none; margin: 0;">Loading…</iframe>
-			</div>
-		</center>
-	</body>
+
+<body>
+<center>
+<div class="wrapper">
+<div id="apDiv1"><img src="moo.jpg" width="800" height="183" /></div>
+<div id="apDiv2">
+
+Congratulations, you've found a <i><span id="moodengColor"></span></i> 
+Moodeng!
+                <br/><br/>
+                You've found the following Moodengs:<br/>
+                <span id="foundMoodengs"></span><br/><br/>
+                Based on your collected Moodengs, here are your hider 
+clues:
+            <p><strong>Clues:</strong><br>
+            <span id="cluesList"></span>
+
+
+
+<p><center>
+<iframe 
+src="https://docs.google.com/forms/d/e/1FAIpQLSdewTFXOz-g7_VebL_WGb8Apb00dEiBo2y9-WMwjpYxVYNY5Q/viewform?embedded=true&entry.76124934=" 
+width="640" height="1500" frameborder="0" marginheight="0" 
+marginwidth="0">Loading…</ifram</center>e></div> </div>
+</center>
+</body>
 </html>
