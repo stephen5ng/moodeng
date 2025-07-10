@@ -73,7 +73,6 @@ def write_html_file(filename, content):
         file.write(content)
 
 def main():    
-    template_buttons_content = read_template_file('template.buttons.html')
     template_single_content = read_template_file('template.single.html')
     template_cookie_content = read_template_file('template.cookie.html')
     
@@ -84,7 +83,6 @@ def main():
         print(f"Loaded {len(clues)} clues from {filename}")
         for template, subdir in (
             (template_single_content, "single"),
-            (template_buttons_content, "buttons"),
             (template_cookie_content, "cookie")):
             for code, clue in zip(codes, clues):
                 modified_template = replace_clues_in_template(
