@@ -75,7 +75,6 @@ function autoShowClues(cookieName) {
     for (var i = 0; i < numCodes; i++) {
         var clueDiv = document.createElement('div');
         clueDiv.className = 'clue-item';
-        clueDiv.id = 'clue-' + i;
         clueDiv.textContent = (i + 1) + '. ' + window.clues[i];
         cluesDiv.appendChild(clueDiv);
     }
