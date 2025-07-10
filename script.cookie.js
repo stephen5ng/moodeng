@@ -10,7 +10,7 @@ window.onload = function() {
     var prefix = code[0];
     var cookieName = 'moodeng_code_' + prefix;
     appendToCookie(cookieName, code);
-    displayCookieCodes(cookieName);
+    displayFoundMoodengs(cookieName);
     autoShowClues(cookieName);
     
     // Find the iframe and set the URL with the extracted code
@@ -21,8 +21,6 @@ window.onload = function() {
             iframe.src = baseUrl + code;
         }
     }
-
-
 };
 
 function appendToCookie(name, value) {
@@ -36,30 +34,21 @@ function appendToCookie(name, value) {
     Cookies.set(name, JSON.stringify(cookieObj));
 }
 
-function displayCookieCodes(cookieName) {
-    var cookieDiv = document.getElementById('cookieCodes');
-    if (!cookieDiv) {
-        cookieDiv = document.createElement('div');
-        cookieDiv.id = 'cookieCodes';
-        cookieDiv.style.cssText = 'position: fixed; top: 10px; right: 10px; background: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 12px; z-index: 1000; max-width: 300px;';
-        document.body.appendChild(cookieDiv);
-    }
-    var moodengCode = Cookies.get(cookieName);
-    var cookieText = '<strong>Moodengs ' + cookieName + ' Found:</strong><br>';
-    if (moodengCode) {
-        try {
-            var codes = Object.keys(JSON.parse(moodengCode));
-            codes.forEach(function(code, index) {
-                cookieText += (index + 1) + '. ' + code + '<br>';
-            });
-        } catch (e) {
-            cookieText += 'No Moodengs found';
-        }
-    } else {
-        cookieText += 'No Moodengs found';
+function displayFoundMoodengs(cookieName) {
+    var foundDiv = document.getElementById('foundMoodengs');
+    if (!foundDiv) {
+        alert('Error: foundMoodengs element not found');
+        return;
     }
     
-    cookieDiv.innerHTML = cookieText;
+    var moodengCode = Cookies.get(cookieName) || '{}';
+    try {
+        var codes = Object.keys(JSON.parse(moodengCode));
+        foundDiv.textContent = codes.join(', ');
+    } catch (e) {
+        Cookies.remove(cookieName);
+        alert('Error parsing cookie');
+    }
 }
 
 // Function to automatically show clues based on number of codes collected
