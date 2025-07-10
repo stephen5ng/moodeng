@@ -9,7 +9,6 @@ window.onload = function() {
         alert('Error: clues variable not found');
     }
 
-    // Get the code from sessionStorage
     var code = sessionStorage.getItem('moodeng_code');
     if (!code || !window.clues || !window.clues[code[0]]) {
         window.location.replace('/');
@@ -20,13 +19,11 @@ window.onload = function() {
     appendToCookie(cookieName, code);
     displayFoundMoodengs(cookieName);
 
-    // Set moodengColor in found.html
     var colorSpan = document.getElementById('moodengColor');
     if (colorSpan) {
         colorSpan.innerText = hider_colors[hiderCode] || '';
     }
 
-    // Filter clues to only those for the correct hiderCode
     window.clues = window.clues[hiderCode];
 
     autoShowClues(cookieName);
