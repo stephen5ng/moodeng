@@ -3,13 +3,20 @@ window.onload = function() {
     var clues = window.clues || [];
     var cluesDiv = document.getElementById('cluesList');
     if (cluesDiv) {
-        var cluesText = '<strong>Clues:</strong><br>';
+        var strongElement = document.createElement('strong');
+        strongElement.textContent = 'Clues:';
+        cluesDiv.appendChild(strongElement);
+        cluesDiv.appendChild(document.createElement('br'));
         
-        clues.forEach(function(clue, index) {
-            cluesText += '<div class="clue-item" id="clue-' + index + '">' + (index + 1) + '. ' + clue + '</div>';
-        });
-        
-        cluesDiv.innerHTML = cluesText;
+        for (var i = 0; i < clues.length; i++) {
+            var clueDiv = document.createElement('div');
+            clueDiv.className = 'clue-item';
+            clueDiv.id = 'clue-' + i;
+            clueDiv.textContent = (i + 1) + '. ' + clues[i];
+            cluesDiv.appendChild(clueDiv);
+        }
+    } else {
+        alert('Error: cluesList element not found');
     }
 
     // Extract the last part of the path (the code) and update iframe src
@@ -24,7 +31,7 @@ window.onload = function() {
     // Find the iframe and update its src with the code
     var iframe = document.querySelector('iframe');
     if (iframe) {
-        iframe.src = iframe.src.replace('REPLACE_CODE_HERE', code);        iframe.src = updatedSrc;
+        iframe.src = iframe.src.replace('REPLACE_CODE_HERE', code);
     }
 
     window.showClues = function(numClues) {
