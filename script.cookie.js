@@ -3,20 +3,19 @@ window.onload = function() {
         alert('Error: clues variable not found');
     }
 
-    // Get the code from the "moo" URL parameter
-    var urlParams = new URLSearchParams(window.location.search);
-    var code = urlParams.get('moo');
+    // Get the code from sessionStorage
+    var code = sessionStorage.getItem('moodeng_code');
+    if (!code || !window.clues || !window.clues[code[0]]) {
+        window.location.replace('/');
+        return;
+    }
     var hiderCode = code[0];
     var cookieName = 'moodeng_code_' + hiderCode;
     appendToCookie(cookieName, code);
     displayFoundMoodengs(cookieName);
 
     // Filter clues to only those for the correct hiderCode
-    if (window.clues && window.clues[hiderCode]) {
-        window.clues = window.clues[hiderCode];
-    } else {
-        window.clues = [];
-    }
+    window.clues = window.clues[hiderCode];
 
     autoShowClues(cookieName);
     

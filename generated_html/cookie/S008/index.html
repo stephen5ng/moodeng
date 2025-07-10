@@ -8,7 +8,8 @@
     <script>
         const pathParts = window.location.pathname.split('/');
         const code = pathParts[pathParts.length - 2];
-        window.location.replace('/found.html?moo=' + encodeURIComponent(code));
+        sessionStorage.setItem('moodeng_code', code);
+        window.location.replace('/found.html');
     </script>
 </body>
 </html>
