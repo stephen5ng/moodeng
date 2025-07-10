@@ -28,10 +28,13 @@ window.onload = function() {
     displayCookieCodes(cookieName);
     autoShowClues(cookieName);
     
-    // Find the iframe and update its src with the code
+    // Find the iframe and set the URL with the extracted code
     var iframe = document.querySelector('iframe');
     if (iframe) {
-        iframe.src = iframe.src.replace('REPLACE_CODE_HERE', code);
+        var baseUrl = iframe.getAttribute('data-base-url');
+        if (baseUrl) {
+            iframe.src = baseUrl + code;
+        }
     }
 
     window.showClues = function(numClues) {
