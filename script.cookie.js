@@ -1,5 +1,4 @@
 window.onload = function() {
-    // Check if clues variable exists
     if (!window.clues) {
         alert('Error: clues variable not found');
     }
@@ -7,13 +6,20 @@ window.onload = function() {
     // Extract the last part of the path (the code) and update iframe src
     var pathParts = window.location.pathname.split('/');
     var code = pathParts[pathParts.length - 2]; // Get the second-to-last part (before 'index.html')
-    var prefix = code[0];
-    var cookieName = 'moodeng_code_' + prefix;
+    var hiderCode = code[0];
+    var cookieName = 'moodeng_code_' + hiderCode;
     appendToCookie(cookieName, code);
     displayFoundMoodengs(cookieName);
+
+    // Filter clues to only those for the correct hiderCode
+    if (window.clues && window.clues[hiderCode]) {
+        window.clues = window.clues[hiderCode];
+    } else {
+        window.clues = [];
+    }
+
     autoShowClues(cookieName);
     
-    // Find the iframe and set the URL with the extracted code
     var iframe = document.querySelector('iframe');
     if (iframe) {
         var baseUrl = iframe.getAttribute('data-base-url');
@@ -51,7 +57,6 @@ function displayFoundMoodengs(cookieName) {
     }
 }
 
-// Function to automatically show clues based on number of codes collected
 function autoShowClues(cookieName) {
     var cluesDiv = document.getElementById('cluesList');
     if (!cluesDiv) {
@@ -60,15 +65,11 @@ function autoShowClues(cookieName) {
     }
     
     var numCodes = Object.keys(JSON.parse(Cookies.get(cookieName) || '{}')).length;
-    var numCluesToShow = Math.min(numCodes, clues.length);
-    
-    if (numCluesToShow > 0) {
-        for (var i = 0; i < numCluesToShow; i++) {
-            var clueDiv = document.createElement('div');
-            clueDiv.className = 'clue-item';
-            clueDiv.id = 'clue-' + i;
-            clueDiv.textContent = (i + 1) + '. ' + clues[i];
-            cluesDiv.appendChild(clueDiv);
-        }
+    for (var i = 0; i < numCodes; i++) {
+        var clueDiv = document.createElement('div');
+        clueDiv.className = 'clue-item';
+        clueDiv.id = 'clue-' + i;
+        clueDiv.textContent = (i + 1) + '. ' + window.clues[i];
+        cluesDiv.appendChild(clueDiv);
     }
 } 
