@@ -1,22 +1,7 @@
 window.onload = function() {
-    // Get clues from the global variable defined in the HTML
-    var clues = window.clues || [];
-    var cluesDiv = document.getElementById('cluesList');
-    if (cluesDiv) {
-        var strongElement = document.createElement('strong');
-        strongElement.textContent = 'Clues:';
-        cluesDiv.appendChild(strongElement);
-        cluesDiv.appendChild(document.createElement('br'));
-        
-        for (var i = 0; i < clues.length; i++) {
-            var clueDiv = document.createElement('div');
-            clueDiv.className = 'clue-item';
-            clueDiv.id = 'clue-' + i;
-            clueDiv.textContent = (i + 1) + '. ' + clues[i];
-            cluesDiv.appendChild(clueDiv);
-        }
-    } else {
-        alert('Error: cluesList element not found');
+    // Check if clues variable exists
+    if (!window.clues) {
+        alert('Error: clues variable not found');
     }
 
     // Extract the last part of the path (the code) and update iframe src
@@ -37,21 +22,7 @@ window.onload = function() {
         }
     }
 
-    window.showClues = function(numClues) {
-        for (var i = 0; i < clues.length; i++) {
-            var clueElement = document.getElementById('clue-' + i);
-            if (clueElement) {
-                clueElement.style.display = 'none';
-            }
-        }
 
-        for (var i = 0; i < numClues && i < clues.length; i++) {
-            var clueElement = document.getElementById('clue-' + i);
-            if (clueElement) {
-                clueElement.style.display = 'block';
-            }
-        }
-    };
 };
 
 function appendToCookie(name, value) {
@@ -93,21 +64,22 @@ function displayCookieCodes(cookieName) {
 
 // Function to automatically show clues based on number of codes collected
 function autoShowClues(cookieName) {
-    var numCodes = Object.keys(JSON.parse(Cookies.get(cookieName) || '{}')).length;
-    
-    var numCluesToShow = Math.min(numCodes, clues.length);
-    
-    for (var i = 0; i < clues.length; i++) {
-        var clueElement = document.getElementById('clue-' + i);
-        if (clueElement) {
-            clueElement.style.display = 'none';
-        }
+    var cluesDiv = document.getElementById('cluesList');
+    if (!cluesDiv) {
+        alert('Error: cluesList element not found');
+        return;
     }
     
-    for (var i = 0; i < numCluesToShow; i++) {
-        var clueElement = document.getElementById('clue-' + i);
-        if (clueElement) {
-            clueElement.style.display = 'block';
+    var numCodes = Object.keys(JSON.parse(Cookies.get(cookieName) || '{}')).length;
+    var numCluesToShow = Math.min(numCodes, clues.length);
+    
+    if (numCluesToShow > 0) {
+        for (var i = 0; i < numCluesToShow; i++) {
+            var clueDiv = document.createElement('div');
+            clueDiv.className = 'clue-item';
+            clueDiv.id = 'clue-' + i;
+            clueDiv.textContent = (i + 1) + '. ' + clues[i];
+            cluesDiv.appendChild(clueDiv);
         }
     }
 } 
