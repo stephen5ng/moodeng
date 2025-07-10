@@ -1,3 +1,9 @@
+// Hider colors mapping
+const hider_colors = {
+    "S": "TURQUOISE",
+    "G": "PINK"
+};
+
 window.onload = function() {
     if (!window.clues) {
         alert('Error: clues variable not found');
@@ -13,6 +19,12 @@ window.onload = function() {
     var cookieName = 'moodeng_code_' + hiderCode;
     appendToCookie(cookieName, code);
     displayFoundMoodengs(cookieName);
+
+    // Set moodengColor in found.html
+    var colorSpan = document.getElementById('moodengColor');
+    if (colorSpan) {
+        colorSpan.innerText = hider_colors[hiderCode] || '';
+    }
 
     // Filter clues to only those for the correct hiderCode
     window.clues = window.clues[hiderCode];
