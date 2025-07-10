@@ -17,8 +17,7 @@ window.onload = function() {
     var code = pathParts[pathParts.length - 2]; // Get the second-to-last part (before 'index.html')
     var prefix = code[0];
     var cookieName = 'moodeng_code_' + prefix;
-    appendToCookie(cookieName, code, 30); // Store for 30 days
-    
+    appendToCookie(cookieName, code);
     displayCookieCodes(cookieName);
     autoShowClues(cookieName);
     
@@ -45,44 +44,15 @@ window.onload = function() {
     };
 };
 
-function setCookie(name, value, days) {
-    var expires = "";
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toUTCString();
+function appendToCookie(name, value) {
+    var cookieObj;
+    try {
+        cookieObj = JSON.parse(Cookies.get(name) || '{}');
+    } catch (e) {
+        cookieObj = {};
     }
-    document.cookie = name + "=" + value + expires + "; path=/";
-}
-
-function appendToCookie(name, value, days) {
-    var existingValue = getCookie(name);
-    var newValue;
-    
-    if (existingValue) {
-        // Check if value already exists to avoid duplicates
-        var values = existingValue.split(',');
-        if (values.indexOf(value) === -1) {
-            newValue = existingValue + ',' + value;
-        } else {
-            newValue = existingValue; // Value already exists
-        }
-    } else {
-        newValue = value;
-    }
-    
-    setCookie(name, newValue, days);
-}
-
-function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
+    cookieObj[value] = true;
+    Cookies.set(name, JSON.stringify(cookieObj));
 }
 
 function displayCookieCodes(cookieName) {
@@ -93,13 +63,17 @@ function displayCookieCodes(cookieName) {
         cookieDiv.style.cssText = 'position: fixed; top: 10px; right: 10px; background: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 12px; z-index: 1000; max-width: 300px;';
         document.body.appendChild(cookieDiv);
     }
-    var moodengCode = getCookie(cookieName);
+    var moodengCode = Cookies.get(cookieName);
     var cookieText = '<strong>Moodengs ' + cookieName + ' Found:</strong><br>';
     if (moodengCode) {
-        var codes = moodengCode.split(',');
-        codes.forEach(function(code, index) {
-            cookieText += (index + 1) + '. ' + code + '<br>';
-        });
+        try {
+            var codes = Object.keys(JSON.parse(moodengCode));
+            codes.forEach(function(code, index) {
+                cookieText += (index + 1) + '. ' + code + '<br>';
+            });
+        } catch (e) {
+            cookieText += 'No Moodengs found';
+        }
     } else {
         cookieText += 'No Moodengs found';
     }
@@ -109,13 +83,7 @@ function displayCookieCodes(cookieName) {
 
 // Function to automatically show clues based on number of codes collected
 function autoShowClues(cookieName) {
-    var moodengCode = getCookie(cookieName);
-    var numCodes = 0;
-    
-    if (moodengCode) {
-        var codes = moodengCode.split(',');
-        numCodes = codes.length;
-    }
+    var numCodes = Object.keys(JSON.parse(Cookies.get(cookieName) || '{}')).length;
     
     var numCluesToShow = Math.min(numCodes, clues.length);
     

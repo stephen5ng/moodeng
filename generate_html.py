@@ -82,7 +82,6 @@ def main():
 
     for codes, clues in read_clues_from_csv(filename):
         print(f"Loaded {len(clues)} clues from {filename}")
-        print(f"clues: {clues}")
         for template, subdir in (
             (template_single_content, "single"),
             (template_buttons_content, "buttons"),
