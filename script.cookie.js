@@ -3,9 +3,9 @@ window.onload = function() {
         alert('Error: clues variable not found');
     }
 
-    // Extract the last part of the path (the code) and update iframe src
-    var pathParts = window.location.pathname.split('/');
-    var code = pathParts[pathParts.length - 2]; // Get the second-to-last part (before 'index.html')
+    // Get the code from the "moo" URL parameter
+    var urlParams = new URLSearchParams(window.location.search);
+    var code = urlParams.get('moo');
     var hiderCode = code[0];
     var cookieName = 'moodeng_code_' + hiderCode;
     appendToCookie(cookieName, code);
