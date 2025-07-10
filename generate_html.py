@@ -17,8 +17,7 @@ def read_clues_from_csv(filename):
         for row in csv_reader:
             if len(row) < 2:
                 continue
-            code = row[0]
-            clue = row[1].strip(" ").strip('"')
+            code, clue = row
             hider_code = code[0]
             if last_hider_code and hider_code != last_hider_code:
                 print(f"yielding {codes}, {clues}")
