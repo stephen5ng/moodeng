@@ -1,4 +1,3 @@
-// Hider colors mapping
 const hider_colors = {
     "S": "TURQUOISE",
     "G": "PINK"
